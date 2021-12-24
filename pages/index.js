@@ -17,15 +17,15 @@ import Product from '../models/Products';
 import db from '../utils/Database/db';
 
 export default function Home(props) {
-  const Products = JSON.parse(JSON.stringify(props.products));
+  const { products } = props;
 
-  console.log("this is all products",products[0])
+  // console.log("this is all products",products[0])
   return (
     <Layout>
       <div>
         <h1>Products </h1>
         <Grid container spacing={3}>
-          {Products.map((product, index) => (
+          {products.map((product, index) => (
             <Grid item md={4} key={index}>
               <Card>
                 <Link href={`/product/${product.slug}`}>
@@ -53,15 +53,14 @@ export default function Home(props) {
   );
 }
 
-export async function getServerSideProps(){
-await db.connect();
-const products = await Product.find({});
-// const products = await Allproducts.json();
-await db.disconnect();
-return {
-  props:{
-    products
-  }
+export async function getServerSideProps() {
+  await db.connect();
+  const products = await Product.find({}).lean();
+  // const products = await Allproducts.json();
+  await db.disconnect();
+  return {
+    props: {
+      products: products.map(db.convertDocToObj),
+    },
+  };
 }
-}
-

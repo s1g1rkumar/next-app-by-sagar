@@ -19,11 +19,18 @@ import { Tooltip } from '@mui/material';
 import { useContext } from 'react';
 import { Store } from '../../utils/Store';
 import Cookies from 'js-cookie'
+
+
+
+
+
 export default function Loyout({ title, children, description }) {
   const classes = useStyles();
   const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
-
+  const { darkMode,cart} = state;
+  console.log("values-cart",cart)
+  
+  
   const theme = createMuiTheme({
     typography: {
       h1: {
@@ -51,7 +58,7 @@ export default function Loyout({ title, children, description }) {
     },
   });
 
-  const OnChangeHandler =()=>{
+  const OnChangeHandler = ()=>{
     dispatch({type:darkMode?'DARK_MODE_OFF':"DARK_MODE_ON"});
     const newDarkMode = !darkMode;
     Cookies.set('darkMode',newDarkMode ? 'ON':'OFF');
@@ -72,9 +79,9 @@ export default function Loyout({ title, children, description }) {
             <div>
               <div>
               <Switch checked={darkMode} onChange={OnChangeHandler} ></Switch>
-                <IconButton>
+              <IconButton>
                   <Tooltip title="Go to cart" placement="bottom" arrow>
-                    <Badge badgeContent={4} color="secondary">
+                    <Badge badgeContent={cart.cartItems.length > 0 ? cart.cartItems.length : 0} color="secondary">
                       <ShoppingCart color="primary" />
                     </Badge>
                   </Tooltip>
